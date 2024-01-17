@@ -15,6 +15,17 @@ def encrypt_file_ecb(input_content: bytes, output_file_path: str):
   with open(output_file_path, 'wb') as file:
     file.write(ciphertext)
 
+def encrypt_file_ecb_with_header(input_content: bytes, output_file_path: str, header: str):
+  key = get_random_bytes(16)
+  cipher = AES.new(key, AES.MODE_ECB)
+
+  padded_content = pad(input_content, AES.block_size)
+  ciphertext: bytes = cipher.encrypt(padded_content)
+
+  ciphertext = header.encode() + b'\n' + ciphertext
+  with open(output_file_path, 'wb') as file:
+    file.write(ciphertext)
+
 
 letters_folder = 'name_letters'
 hashed_headers_file_name = 'hashvalues.txt'
@@ -32,6 +43,10 @@ for file_name in os.listdir(letters_folder):
     encrypted_file_folder = 'encrypted_files'
     encrypted_file_path = os.path.join(encrypted_file_folder, file_name)
     encrypt_file_ecb(file_content, encrypted_file_path)
+
+    encrypted_file_with_header_folder = 'encrypted_files_with_header'
+    encrypted_file_with_header_path = os.path.join(encrypted_file_with_header_folder, file_name)
+    encrypt_file_ecb_with_header(file_content, encrypted_file_with_header_path, file_header) 
 
 
 with open(hashed_headers_file_name, 'w') as output_headers_object:
