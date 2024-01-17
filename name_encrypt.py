@@ -1,0 +1,1 @@
+letters_folder = 'name_letters'
